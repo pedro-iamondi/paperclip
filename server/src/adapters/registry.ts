@@ -137,6 +137,20 @@ import {
   agentConfigurationDoc as hermesAgentConfigurationDoc,
   models as hermesModels,
 } from "hermes-paperclip-adapter";
+import {
+  execute as openrouterExecute,
+  testEnvironment as openrouterTestEnvironment,
+  sessionCodec as openrouterSessionCodec,
+  listSkills as openrouterListSkills,
+  syncSkills as openrouterSyncSkills,
+  detectModel as openrouterDetectModel,
+  listOpenRouterModels,
+  getConfigSchema as openrouterGetConfigSchema,
+} from "@paperclipai/adapter-openrouter/server";
+import {
+  agentConfigurationDoc as openrouterAgentConfigurationDoc,
+  models as openrouterModels,
+} from "@paperclipai/adapter-openrouter";
 import { BUILTIN_ADAPTER_TYPES } from "./builtin-adapter-types.js";
 import { buildExternalAdapters } from "./plugin-loader.js";
 import { getDisabledAdapterTypes } from "../services/adapter-plugin-store.js";
@@ -499,6 +513,24 @@ const hermesLocalAdapter: ServerAdapterModule = {
   detectModel: () => detectModelFromHermes(),
 };
 
+const openrouterAdapter: ServerAdapterModule = {
+  type: "openrouter",
+  execute: openrouterExecute,
+  testEnvironment: openrouterTestEnvironment,
+  listSkills: openrouterListSkills,
+  syncSkills: openrouterSyncSkills,
+  sessionCodec: openrouterSessionCodec,
+  models: openrouterModels,
+  listModels: listOpenRouterModels,
+  supportsLocalAgentJwt: true,
+  supportsInstructionsBundle: true,
+  instructionsPathKey: "instructionsFilePath",
+  requiresMaterializedRuntimeSkills: false,
+  agentConfigurationDoc: openrouterAgentConfigurationDoc,
+  detectModel: openrouterDetectModel,
+  getConfigSchema: openrouterGetConfigSchema,
+};
+
 const adaptersByType = new Map<string, ServerAdapterModule>();
 
 // For builtin types that are overridden by an external adapter, we keep the
@@ -523,6 +555,7 @@ function registerBuiltInAdapters() {
     grokLocalAdapter,
     openclawGatewayAdapter,
     hermesLocalAdapter,
+    openrouterAdapter,
     processAdapter,
     httpAdapter,
   ]) {
